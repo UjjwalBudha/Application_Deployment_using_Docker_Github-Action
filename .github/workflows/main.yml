@@ -58,6 +58,17 @@ jobs:
                docker tag application_deployment_using_docker_github-action_backend "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend
                docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend       
                
+            - name: Build & Deploy
+              env:
+                PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+                HOSTNAME: ${{secrets.SSH_HOST}}
+                USER_NAME: ${{secrets.USER_NAME}}
+              run: |
+                echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+                ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+                sudo apt update 
+                '
+           
             - name: Terraform Init
               run: |
                  cd terraform
@@ -72,14 +83,3 @@ jobs:
               run: |
                 cd terraform
                 terraform apply -var-file=dev.tfvars -auto-approve
-
-            - name: Build & Deploy
-              env:
-                PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-                HOSTNAME: ${{secrets.SSH_HOST}}
-                USER_NAME: ${{secrets.USER_NAME}}
-              run: |
-                echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-                ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-                sudo apt update 
-                '
