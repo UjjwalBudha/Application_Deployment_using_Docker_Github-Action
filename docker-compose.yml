@@ -1,0 +1,39 @@
+version: '3'
+services:
+  backend:
+    build: ./backend
+    ports: 
+      - "3000:3000"
+    depends_on:
+      - mysql-test
+    networks:
+      - test-networks
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend
+    networks:
+      - test-networks
+
+  mysql-test:
+    container_name: mysql
+    image: mysql:latest
+    restart: on-failure
+    environment:
+      - MYSQL_DATABASE=test_db
+      - MYSQL_ROOT_PASSWORD=ujwal1234
+      - MYSQL_USER=ujwal
+      - MYSQL_PASSWORD=ujwal1234
+    ports:
+      - "33060:3306"
+    volumes:
+      - "./data/db/mysql:/var/lib/mysql"
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - test-networks
+
+networks:
+  test-networks:
