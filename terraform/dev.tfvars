@@ -17,7 +17,7 @@ key_name = "intern-ujwal"
 
 
 name = {
-  name1 = "ansible-server-intern-ujwal"
+  name1 = "docker-server-intern-ujwal"
   # name2= "ansible-module-server2"
 }
 
