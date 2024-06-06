@@ -5,6 +5,7 @@ sudo yum update -y
 # Exit immediately if a command exits with a non-zero status
 set -e
 sudo apt-get update -y
+sudo snap install aws-cli --classic -y 
 
 # Install required packages for Docker installation
 echo "Installing required packages..."
