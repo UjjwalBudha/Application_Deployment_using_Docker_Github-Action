@@ -60,15 +60,6 @@ jobs:
               run: |
                docker tag application_deployment_using_docker_github-action_backend "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend
                docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend       
-               
-            - name: Configuring aws-cli
-              run: |
-                echo "$PRIVATE_KEY" > private_key.pem && chmod 600 private_key.pem
-                ssh -o StrictHostKeyChecking=no -i private_key.pem ${USER_NAME}@${HOSTNAME} '
-                aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-                aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-                aws configure set aws_session_token $AWS_SESSION_TOKEN
-                '
            
             - name: Terraform Init
               run: |
@@ -84,3 +75,12 @@ jobs:
               run: |
                 cd terraform
                 terraform apply -var-file=dev.tfvars -auto-approve
+
+            # - name: Configuring aws-cli
+            #   run: |
+            #     echo "$PRIVATE_KEY" > private_key.pem && chmod 600 private_key.pem
+            #     ssh -o StrictHostKeyChecking=no -i private_key.pem ${USER_NAME}@${HOSTNAME} '
+            #     aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+            #     aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+            #     aws configure set aws_session_token $AWS_SESSION_TOKEN
+            #     '

@@ -40,3 +40,21 @@ DOCKER_COMPOSE_VERSION="1.29.2"
 sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 echo "Applying executable permissions to the Docker Compose binary..."
 sudo chmod +x /usr/local/bin/docker-compose
+
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 426857564226.dkr.ecr.us-east-1.amazonaws.com
+docker pull 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend
+docker pull 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend
+
+cd ~
+echo "version: '3'
+services:
+  frontend:
+    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend
+    ports:
+      - "8080:80"
+  backend:
+    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend
+    ports:
+      - "8081:80"
+" > docker-compose.yml
+docker-compose up --build -d
