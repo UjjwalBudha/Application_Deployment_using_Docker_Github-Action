@@ -35,15 +35,15 @@ jobs:
 
             - name: Create S3 bucket
               run: |
-                aws s3api create-bucket --bucket docker_test_bucket_intern_ujwal
+                aws s3api create-bucket --bucket intern-ujwal-docker
         
             - name: Delete existing resources in S3 bucket
               run: |
-                aws s3 rm s3://docker_test_bucket_intern_ujwal --recursive
+                aws s3 rm s3://intern-ujwal-docker --recursive
         
             - name: Upload to S3
               run: |
-                aws s3 sync ansible s3://docker_test_bucket_intern_ujwal --delete
+                aws s3 sync ansible s3://intern-ujwal-docker --delete
 
             - name: Install Docker Compose
               run: |
