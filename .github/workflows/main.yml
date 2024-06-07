@@ -82,7 +82,7 @@ jobs:
           cd terraform
           terraform plan -var-file=dev.tfvars
 
-      - name: Terraform apply
+      - name: Terraform Apply
         id: apply
         run: |
           cd terraform
