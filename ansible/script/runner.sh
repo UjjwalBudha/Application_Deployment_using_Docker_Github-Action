@@ -30,3 +30,4 @@ services:
     volumes:
       - ~/data/db/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql " > ~/docker-compose.yml
 docker-compose up --build -d
+systemctl restart nginx
