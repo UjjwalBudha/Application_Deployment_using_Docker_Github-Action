@@ -87,7 +87,7 @@ jobs:
           cd terraform
           terraform apply -var-file=dev.tfvars -auto-approve
 
-      - name: AWS SSM Send-Command using AWS CLI
+      - name: AWS SSM Send-Command using AWS-CLI
         run: |
           aws ssm send-command \
             --instance-ids "${{ secrets.INSTANCE_ID }}" \
