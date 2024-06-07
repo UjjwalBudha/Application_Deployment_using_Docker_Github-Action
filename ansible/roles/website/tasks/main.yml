@@ -15,4 +15,4 @@
 - name: Run automate.sh script
   ansible.builtin.shell: ~/ansible/script/runner.sh
   args:
-    chdir: ~/ansible/script/
+    chdir: ~/ansible/script
