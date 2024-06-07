@@ -7,12 +7,17 @@ cd ~
 echo "version: '3'
 services:
   frontend:
-    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-b638d58-20240607050822
+    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-aa2b47e-20240607054008
     ports:
       - "8080:80"
   backend:
-    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend-b638d58-20240607050822
+    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend-aa2b47e-20240607054008
     ports:
       - "8081:80"
+
+  mysql:
+    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-aa2b47e-20240607054008
+    ports:
+      - "33060:3306"
 " > docker-compose.yml
 docker-compose up --build -d

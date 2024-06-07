@@ -52,15 +52,15 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 # # Sync files from the S3 bucket to the local machine
 # echo "Syncing files from S3 bucket..."
-# aws s3 sync s3://intern-ujwal-docker/ ~/ansible/
+aws s3 sync s3://intern-ujwal-docker/ ~/ansible/
 
-# # Install Ansible Galaxy collection for Docker
-# echo "Installing Ansible Galaxy collection for Docker..."
-# ansible-galaxy collection install community.docker
+# Install Ansible Galaxy collection for Docker
+echo "Installing Ansible Galaxy collection for Docker..."
+ansible-galaxy collection install community.docker
 
-# # Change directory to the ansible directory
-# cd ~/ansible
+# Change directory to the ansible directory
+cd ~/ansible
 
-# # Run the Ansible playbook locally
-# echo "Running the Ansible playbook..."
-# ansible-playbook --connection=local --inventory localhost, playbook.ymlls
+# Run the Ansible playbook locally
+echo "Running the Ansible playbook..."
+ansible-playbook --connection=local --inventory localhost, playbook.ymlls
