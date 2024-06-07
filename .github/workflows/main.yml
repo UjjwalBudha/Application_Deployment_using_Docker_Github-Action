@@ -65,17 +65,29 @@ jobs:
             - name: Check Docker image name
               run: |
                 docker images
-            # - name: Upload the docker_frontend_container image to ECR
-            #   run: |
-            #    docker tag application_deployment_using_docker_github-action_frontend "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend
-            #    docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend
+
+            - name: Set Dynamic Tag
+              id: vars
+              run: |
+                TAG="${GITHUB_SHA::7}-$(date +'%Y%m%d%H%M%S')"
+                echo "::set-output name=tag::$TAG"
+
+            - name: Upload the docker_frontend_container image to ECR
+              run: |
+               docker tag application_deployment_using_docker_github-action_frontend "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-${{ steps.vars.outputs.tag }}
+               docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-${{ steps.vars.outputs.tag }}
                
 
-            # - name: Upload the docker_backend_container image to ECR
-            #   run: |
-            #    docker tag application_deployment_using_docker_github-action_backend "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend
-            #    docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend       
-           
+            - name: Upload the docker_backend_container image to ECR
+              run: |
+               docker tag application_deployment_using_docker_github-action_backend "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend-${{ steps.vars.outputs.tag }}
+               docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend-${{ steps.vars.outputs.tag }}      
+               
+            - name: Upload the docker_backend_container image to ECR
+              run: |
+               docker tag application_deployment_using_docker_github-action_mysql-test "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-${{ steps.vars.outputs.tag }}
+               docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:mysql-${{ steps.vars.outputs.tag }}
+          
             - name: Terraform Init
               run: |
                  cd terraform
