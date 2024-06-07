@@ -115,6 +115,7 @@ jobs:
                 ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
       
                     # Now we have got the access of EC2 and we will start the deploy .
-                    echo "hello" > text.txt
-                    cat text.txt
+                    aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+                    aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+                    aws configure set aws_session_token $AWS_SESSION_TOKEN
                     '
