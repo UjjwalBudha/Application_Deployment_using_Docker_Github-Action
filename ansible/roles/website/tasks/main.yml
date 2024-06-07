@@ -7,6 +7,16 @@
   loop:
     - nginx
 
+- name: Ensure automate.sh has executable permissions
+  ansible.builtin.file:
+    path: /root/ansible/script/runner.sh
+    mode: '0755'
+
+- name: Run automate.sh script
+  ansible.builtin.shell: /root/ansible/script/runner.sh
+  args:
+    chdir: /root/ansible/script
+
 - name: Configure Nginx as a reverse proxy
   copy:
     content: |
