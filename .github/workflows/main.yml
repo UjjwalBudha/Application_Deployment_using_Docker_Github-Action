@@ -89,17 +89,14 @@ jobs:
 
       - name: Print environment variables
         run: |
-          printenv
+          printenv | grep AWS
 
-      - name: AWS SSM Send-Command
-        uses: peterkimzz/aws-ssm-send-command@master
-        id: ssm
-        with:
-          aws-region: ${{ secrets.AWS_REGION }}
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}  # Ensure this is uncommented if using temporary credentials
-          instance-ids: ${{ secrets.INSTANCE_ID }}
-          working-directory: ~
-          command: ls -al
-          comment: Hello world!
+      - name: AWS SSM Send-Command using AWS CLI
+        run: |
+          aws ssm send-command \
+            --instance-ids "${{ secrets.INSTANCE_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Running deploy script" \
+            --parameters commands=["/root/ansible/script/runner.sh"] \
+            --timeout-seconds 600 \
+            --output text
