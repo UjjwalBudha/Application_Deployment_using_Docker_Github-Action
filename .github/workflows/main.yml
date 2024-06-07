@@ -26,66 +26,70 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y awscli
 
-      - name: Upload to S3
+      # - name: Upload to S3
+      #   run: |
+      #     aws s3 sync ansible s3://intern-ujwal-docker --delete
+
+      # - name: Install Docker Compose
+      #   run: |
+      #     DOCKER_COMPOSE_VERSION=1.29.2
+      #     sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      #     sudo chmod +x /usr/local/bin/docker-compose
+      #     docker-compose --version
+
+      # - name: Login Docker
+      #   run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ujwalbudha --password-stdin
+
+      # - name: Login to ECR
+      #   run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com
+
+      # - name: Build Docker Image
+      #   run: |
+      #     docker-compose build
+
+      # - name: Check Docker image name
+      #   run: |
+      #     docker images
+
+      # - name: Set Dynamic Tag
+      #   id: vars
+      #   run: |
+      #     TAG="${GITHUB_SHA::7}-$(date +'%Y%m%d%H%M%S')"
+      #     echo "::set-output name=tag::$TAG"
+
+      # - name: Upload the docker_frontend_container image to ECR
+      #   run: |
+      #     docker tag application_deployment_using_docker_github-action_frontend "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-${{ steps.vars.outputs.tag }}
+      #     docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-${{ steps.vars.outputs.tag }}
+
+      # - name: Upload the docker_backend_container image to ECR
+      #   run: |
+      #     docker tag application_deployment_using_docker_github-action_backend "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend-${{ steps.vars.outputs.tag }}
+      #     docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend-${{ steps.vars.outputs.tag }}
+
+      # - name: Upload the docker_database_container image to ECR
+      #   run: |
+      #     docker tag application_deployment_using_docker_github-action_mysql-test "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-${{ steps.vars.outputs.tag }}
+      #     docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-${{ steps.vars.outputs.tag }}
+
+      # - name: Terraform Init
+      #   run: |
+      #     cd terraform
+      #     terraform init
+
+      # - name: Terraform plan
+      #   run: |
+      #     cd terraform
+      #     terraform plan -var-file=dev.tfvars
+
+      # - name: Terraform apply
+      #   run: |
+      #     cd terraform
+      #     terraform apply -var-file=dev.tfvars -auto-approve
+
+      - name: Print environment variables
         run: |
-          aws s3 sync ansible s3://intern-ujwal-docker --delete
-
-      - name: Install Docker Compose
-        run: |
-          DOCKER_COMPOSE_VERSION=1.29.2
-          sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version
-
-      - name: Login Docker
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ujwalbudha --password-stdin
-
-      - name: Login to ECR
-        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com
-
-      - name: Build Docker Image
-        run: |
-          docker-compose build
-
-      - name: Check Docker image name
-        run: |
-          docker images
-
-      - name: Set Dynamic Tag
-        id: vars
-        run: |
-          TAG="${GITHUB_SHA::7}-$(date +'%Y%m%d%H%M%S')"
-          echo "::set-output name=tag::$TAG"
-
-      - name: Upload the docker_frontend_container image to ECR
-        run: |
-          docker tag application_deployment_using_docker_github-action_frontend "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-${{ steps.vars.outputs.tag }}
-          docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-${{ steps.vars.outputs.tag }}
-
-      - name: Upload the docker_backend_container image to ECR
-        run: |
-          docker tag application_deployment_using_docker_github-action_backend "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend-${{ steps.vars.outputs.tag }}
-          docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend-${{ steps.vars.outputs.tag }}
-
-      - name: Upload the docker_database_container image to ECR
-        run: |
-          docker tag application_deployment_using_docker_github-action_mysql-test "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-${{ steps.vars.outputs.tag }}
-          docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-${{ steps.vars.outputs.tag }}
-
-      - name: Terraform Init
-        run: |
-          cd terraform
-          terraform init
-
-      - name: Terraform plan
-        run: |
-          cd terraform
-          terraform plan -var-file=dev.tfvars
-
-      - name: Terraform apply
-        run: |
-          cd terraform
-          terraform apply -var-file=dev.tfvars -auto-approve
+          printenv
 
       - name: AWS SSM Send-Command
         uses: peterkimzz/aws-ssm-send-command@master
@@ -94,9 +98,8 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          # aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}  # Ensure this is uncommented if using temporary credentials
           instance-ids: ${{ secrets.INSTANCE_ID }}
-
           working-directory: ~
           command: ls -al
           comment: Hello world!
