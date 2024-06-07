@@ -86,3 +86,13 @@ jobs:
         run: |
           cd terraform
           terraform apply -var-file=dev.tfvars -auto-approve
+
+      - name: Run bash script on EC2 via SSM
+        run: |
+          aws ssm send-command \
+            --instance-ids "i-00d7843aaaff2938c" \ 
+            --document-name "AWS-RunShellScript" \
+            --comment "Running deploy script" \
+            --parameters commands=["/root/ansible/script/runner.sh"] \
+            --timeout-seconds 600 \
+            --output text
