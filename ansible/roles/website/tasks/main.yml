@@ -9,10 +9,10 @@
 
 - name: Ensure automate.sh has executable permissions
   ansible.builtin.file:
-    path: ~/ansible/script/runner.sh
+    path: /root/ansible/script/runner.sh
     mode: '0755'
 
 - name: Run automate.sh script
-  ansible.builtin.shell: ~/ansible/script/runner.sh
+  ansible.builtin.shell: /root/ansible/script/runner.sh
   args:
-    chdir: ~/ansible/script
+    chdir: /root/ansible/script
