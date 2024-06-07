@@ -1,0 +1,11 @@
+---
+bucket: test-intern-github-action
+website_dir: /usr/share/nginx/html/*
+destination: /usr/share/nginx/html/
+web_dir_tmp : /tmp/portfolio/
+web_dir: /usr/share/nginx/html/
+github_repo: https://github.com/UjjwalBudha/portfolio.git
+common_packages:
+  - python3-pip
+  - python3-boto3
+  - nginx

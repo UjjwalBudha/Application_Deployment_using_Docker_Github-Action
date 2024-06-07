@@ -1,0 +1,11 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: true
+  become: true
+  roles:
+    - website
+  vars:
+    ansible_aws_ssm_bucket_name: 8586-terraform-state 
+    ansible_aws_ssm_timeout: 300
+    ansible_python_interpreter: /usr/bin/python3
