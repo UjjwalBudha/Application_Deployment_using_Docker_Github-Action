@@ -58,7 +58,7 @@ echo "Applying executable permissions to the Docker Compose binary..."
 sudo chmod +x /usr/local/bin/docker-compose
 
 # Sync files from the S3 bucket to the local machine
-aws s3 sync s3://docker_test_bucket_intern/ ~/ansible/
+aws s3 sync s3://docker_test_bucket_intern_ujwal/ ~/ansible/
 
 # Change directory to the ansible directory
 cd ~/ansible
