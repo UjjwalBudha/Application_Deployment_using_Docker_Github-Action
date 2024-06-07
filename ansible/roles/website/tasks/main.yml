@@ -1,5 +1,5 @@
 ---
-- name: Install common packages using yum
+- name: Install common packages using apt
   apt:
     name: "{{ item }}"
     state: present
