@@ -1,0 +1,6 @@
+---
+bucket: test-intern-github-action
+website_dir: /var/www/html
+destination: /usr/share/nginx/html/index.html
+object: index.html
+web_dir: /usr/share/nginx/html/

@@ -1,0 +1,31 @@
+---
+- name: Install common packages using yum
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  loop:
+    - python3-pip
+    - python3-boto3
+    - nginx
+
+
+- name: Remove all files in /usr/share/nginx/html
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  with_fileglob:
+    - /usr/share/nginx/html/*
+
+- name: Clone portfolio repository
+  ansible.builtin.git:
+    repo: 'https://github.com/UjjwalBudha/portfolio.git'
+    dest: '/tmp/portfolio'
+    force: yes
+
+- name: Copy portfolio contents to /usr/share/nginx/html
+  ansible.builtin.copy:
+    src: /tmp/portfolio/
+    dest: /usr/share/nginx/html/
+    remote_src: yes
+  notify: Restart nginx
