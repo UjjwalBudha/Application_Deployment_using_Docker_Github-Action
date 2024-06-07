@@ -29,7 +29,5 @@ services:
       - MYSQL_PASSWORD=ujwal1234
     volumes:
       - "~/data/db/mysql:/var/lib/mysql"
-      - ~/data/db/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql"
-
-" > docker-compose.yml
+      - "~/data/db/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql" " > docker-compose.yml
 docker-compose up --build -d
