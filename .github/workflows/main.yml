@@ -91,12 +91,12 @@ jobs:
         run: |
           printenv | grep AWS
 
-      # - name: AWS SSM Send-Command using AWS CLI
-      #   run: |
-      #     aws ssm send-command \
-      #       --instance-ids "${{ secrets.INSTANCE_ID }}" \
-      #       --document-name "AWS-RunShellScript" \
-      #       --comment "Running deploy script" \
-      #       --parameters commands=["/root/ansible/script/runner.sh"] \
-      #       --timeout-seconds 600 \
-      #       --output text
+      - name: AWS SSM Send-Command using AWS CLI
+        run: |
+          aws ssm send-command \
+            --instance-ids "${{ secrets.INSTANCE_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Running deploy script" \
+            --parameters commands=["/root/ansible/script/runner.sh"] \
+            --timeout-seconds 600 \
+            --output text
