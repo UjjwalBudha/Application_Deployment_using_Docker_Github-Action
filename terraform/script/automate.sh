@@ -50,40 +50,36 @@ sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPO
 echo "Applying executable permissions to the Docker Compose binary..."
 sudo chmod +x /usr/local/bin/docker-compose
 
-# Sync files from the S3 bucket to the local machine
-echo "Syncing files from S3 bucket..."
-aws s3 sync s3://intern-ujwal-docker/ ~/ansible/
+# # Sync files from the S3 bucket to the local machine
+# echo "Syncing files from S3 bucket..."
+# aws s3 sync s3://intern-ujwal-docker/ ~/ansible/
 
-# Install Ansible Galaxy collection for Docker
-echo "Installing Ansible Galaxy collection for Docker..."
-ansible-galaxy collection install community.docker
+# # Install Ansible Galaxy collection for Docker
+# echo "Installing Ansible Galaxy collection for Docker..."
+# ansible-galaxy collection install community.docker
 
-# Change directory to the ansible directory
-cd ~/ansible
+# # Change directory to the ansible directory
+# cd ~/ansible
 
-# Run the Ansible playbook locally
-echo "Running the Ansible playbook..."
-ansible-playbook --connection=local --inventory localhost, playbook.yml
-
-
+# # Run the Ansible playbook locally
+# echo "Running the Ansible playbook..."
+# ansible-playbook --connection=local --inventory localhost, playbook.yml
 
 
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 426857564226.dkr.ecr.us-east-1.amazonaws.com
+docker pull 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend
+docker pull 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend
 
-
-# aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 426857564226.dkr.ecr.us-east-1.amazonaws.com
-# docker pull 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend
-# docker pull 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend
-
-# cd ~
-# echo "version: '3'
-# services:
-#   frontend:
-#     image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend
-#     ports:
-#       - "8080:80"
-#   backend:
-#     image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend
-#     ports:
-#       - "8081:80"
-# " > docker-compose.yml
-# docker-compose up --build -d
+cd ~
+echo "version: '3'
+services:
+  frontend:
+    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend
+    ports:
+      - "8080:80"
+  backend:
+    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend
+    ports:
+      - "8081:80"
+" > docker-compose.yml
+docker-compose up --build -d
