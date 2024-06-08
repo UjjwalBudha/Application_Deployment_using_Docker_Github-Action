@@ -111,6 +111,16 @@ jobs:
             --parameters commands=["aws s3 cp s3://intern-ujwal-docker/script/runner.sh /root"] \
             --timeout-seconds 600 \
             --output text
+
+      - name: AWS SSM Send-Command to Make Script Executable
+        run: |
+          aws ssm send-command \
+            --instance-ids "${{ env.INSTANCE_IDS }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Make runner.sh executable" \
+            --parameters commands=["chmod +x /root/runner.sh"] \
+            --timeout-seconds 600 \
+            --output text
     
 
       - name: AWS SSM Send-Command using AWS-CLI
