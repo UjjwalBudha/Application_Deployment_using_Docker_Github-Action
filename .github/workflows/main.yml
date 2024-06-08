@@ -128,7 +128,7 @@ jobs:
             --instance-ids "${{ env.INSTANCE_IDS }}" \
             --document-name "AWS-RunShellScript" \
             --comment "Running deploy script" \
-            --parameters commands=["sed -i 's|image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-[^ ]*|image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-$FRONTEND_TAG|g' /root/docker-compose.yml"] \
+            --parameters '{"commands":["sed -i \'s|image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-[^ ]*|image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-'$FRONTEND_TAG'|g\' /root/docker-compose.yml"]}' \
             --timeout-seconds 600 \
             --output text
 
