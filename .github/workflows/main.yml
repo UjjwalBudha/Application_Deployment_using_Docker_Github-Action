@@ -102,6 +102,7 @@ jobs:
       - name: Check Terraform plan for creation actions
         id: check_plan
         run: |
+          cd terraform
           PLAN_OUTPUT=$(terraform plan -var-file=dev.tfvars)
           if echo "$PLAN_OUTPUT" | grep -q "Creating"; then
             echo "::set-output name=infra_created::true"
