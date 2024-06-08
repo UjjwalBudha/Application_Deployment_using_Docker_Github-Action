@@ -86,9 +86,6 @@ jobs:
         run: |
           cd terraform
           terraform apply -var-file=dev.tfvars -auto-approve
-    
-      - name: Delay before SSM command
-        run: sleep 40
 
       - name: Capture Terraform output
         id: output
@@ -102,8 +99,10 @@ jobs:
           INSTANCE_IDS=$(jq -r '.id.value | join(",")' terraform/output.json)
           echo "INSTANCE_IDS=$INSTANCE_IDS" >> $GITHUB_ENV
 
+      - name: Delay before SSM command
+        run: sleep 40
 
-      - name: AWS SSM Send-Command using AWS-CLI
+      - name: AWS SSM Send-Command using AWS CLI
         run: |
           aws ssm send-command \
             --instance-ids "${{ env.INSTANCE_IDS }}" \
