@@ -87,21 +87,27 @@ jobs:
           cd terraform
           terraform apply -var-file=dev.tfvars -auto-approve
 
-      - name: Capture Terraform output
-        id: output
-        run: |
-          cd terraform
-          terraform output -json > output.json
+          - name: Capture Terraform output
+          id: output
+          run: |
+            cd terraform
+            terraform output -json > output.json
   
       - name: Extract instance ID
-        id: instance_id
+        id: extract_instance_id
         run: |
-          jq -r '.instance_id.value' terraform/output.json
-        env:
-          INSTANCE_ID: ${{ steps.output.outputs.instance_id }}
-        
-      - name: Use instance ID
-        run: echo "The instance ID is ${{ steps.instance_id.outputs.INSTANCE_ID }}"
+          INSTANCE_ID=$(jq -r '.instance_id.value' terraform/output.json)
+          echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
+  
+      - name: AWS SSM Send-Command using AWS-CLI
+        run: |
+          aws ssm send-command \
+            --instance-ids "${{ env.INSTANCE_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Running deploy script" \
+            --parameters commands=["/root/ansible/script/runner.sh"] \
+            --timeout-seconds 600 \
+            --output text
 
 
       # - name: AWS SSM Send-Command using AWS-CLI
