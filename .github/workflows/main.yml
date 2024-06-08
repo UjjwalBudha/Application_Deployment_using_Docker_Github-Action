@@ -108,7 +108,7 @@ jobs:
             --instance-ids "${{ env.INSTANCE_IDS }}" \
             --document-name "AWS-RunShellScript" \
             --comment "Running deploy script" \
-            --parameters commands=["aws s3 cp s3://intern-ujwal-docker/script/runner.sh /root/runner.sh"] \
+            --parameters commands=["aws s3 cp s3://intern-ujwal-docker/script/runner.sh /root"] \
             --timeout-seconds 600 \
             --output text
     
