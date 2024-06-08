@@ -98,6 +98,24 @@ jobs:
         run: |
           INSTANCE_IDS=$(jq -r '.id.value | join(",")' terraform/output.json)
           echo "INSTANCE_IDS=$INSTANCE_IDS" >> $GITHUB_ENV
+
+
+      - name: Replace Docker Image as well as tags
+        run: |
+          FRONTEND_TAG="frontend-023d27d-20240608030400"
+          BACKEND_TAG="backend-023d27d-20240608030400"
+          DATABASE_TAG="database-023d27d-20240608030400"
+          aws ssm send-command \
+            --instance-ids "${{ env.INSTANCE_IDS }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Running deploy script" \
+            --parameters commands=[
+              "sed -i 's|image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-[^ ]*|image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-$FRONTEND_TAG|g' /root/docker-compose.yml",
+              "sed -i 's|image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend-[^ ]*|image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend-$BACKEND_TAG|g' /root/docker-compose.yml",
+              "sed -i 's|image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-[^ ]*|image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-$DATABASE_TAG|g' /root/docker-compose.yml"
+            ] \
+            --timeout-seconds 600 
+
   
       - name: AWS SSM Send-Command using AWS-CLI
         run: |
@@ -107,4 +125,3 @@ jobs:
             --comment "Running deploy script" \
             --parameters commands=["/root/ansible/script/runner.sh"] \
             --timeout-seconds 600 \
-            --output text
