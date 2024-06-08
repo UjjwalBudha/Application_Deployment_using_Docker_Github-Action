@@ -87,17 +87,17 @@ jobs:
       #     cd terraform
       #     terraform apply -var-file=dev.tfvars -auto-approve
 
-      # - name: Capture Terraform output
-      #   id: output
-      #   run: |
-      #     cd terraform
-      #     terraform output -json > output.json
+      - name: Capture Terraform output
+        id: output
+        run: |
+          cd terraform
+          terraform output -json > output.json
   
-      # - name: Extract instance IDs
-      #   id: extract_instance_ids
-      #   run: |
-      #     INSTANCE_IDS=$(jq -r '.id.value | join(",")' terraform/output.json)
-      #     echo "INSTANCE_IDS=$INSTANCE_IDS" >> $GITHUB_ENV
+      - name: Extract instance IDs
+        id: extract_instance_ids
+        run: |
+          INSTANCE_IDS=$(jq -r '.id.value | join(",")' terraform/output.json)
+          echo "INSTANCE_IDS=$INSTANCE_IDS" >> $GITHUB_ENV
 
       # - name: Delay before SSM command
       #   run: sleep 20
