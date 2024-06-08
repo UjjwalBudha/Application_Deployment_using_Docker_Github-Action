@@ -85,13 +85,24 @@ jobs:
       - name: Terraform apply
         run: |
           cd terraform
-          terraform apply -var-file=dev.tfvars -auto-approve > output-terraform.txt
+          terraform apply -var-file=dev.tfvars -auto-approve
 
-
-      - name: Terraform apply
+      - name: Capture Terraform output
+        id: output
         run: |
           cd terraform
-          cat output-terraform.txt | grep "i-*"
+          terraform output -json > output.json
+  
+      - name: Extract instance ID
+        id: instance_id
+        run: |
+          jq -r '.instance_id.value' terraform/output.json
+        env:
+          INSTANCE_ID: ${{ steps.output.outputs.instance_id }}
+        
+      - name: Use instance ID
+        run: echo "The instance ID is ${{ steps.instance_id.outputs.INSTANCE_ID }}"
+
 
       # - name: AWS SSM Send-Command using AWS-CLI
       #   run: |
