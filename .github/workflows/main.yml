@@ -114,7 +114,7 @@ jobs:
         if: steps.check_plan.outputs.infra_created == 'true'
         run: sleep 120  
 
-      - name: AWS SSM Send-Command using AWS-CLI
+      - name: AWS SSM Send-Command using AWS CLI
         run: |
           aws ssm send-command \
             --instance-ids "${{ env.INSTANCE_IDS }}" \
