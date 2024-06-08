@@ -11,7 +11,7 @@ env:
   AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
 
 jobs:
-  AWS:
+  dev:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,11 +29,6 @@ jobs:
       - name: Upload to S3
         run: |
           aws s3 sync ansible s3://intern-ujwal-docker --delete
-
-  docker:
-    runs-on: ubuntu-latest
-    needs: AWS
-    steps:
 
       - name: Install Docker Compose
         run: |
@@ -77,11 +72,6 @@ jobs:
           docker tag application_deployment_using_docker_github-action_mysql-test "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-${{ steps.vars.outputs.tag }}
           docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-${{ steps.vars.outputs.tag }}
 
-  terraform:
-    runs-on: ubuntu-latest
-    needs: docker
-    steps:
-
       - name: Terraform Init
         run: |
           cd terraform
@@ -96,11 +86,6 @@ jobs:
         run: |
           cd terraform
           terraform apply -var-file=dev.tfvars -auto-approve
-
-  SSM:
-    runs-on: ubuntu-latest
-    needs: terraform
-    steps:
 
       - name: Capture Terraform output
         id: output
