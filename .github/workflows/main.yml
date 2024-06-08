@@ -102,13 +102,15 @@ jobs:
       - name: Delay before SSM command
         run: sleep 20
 
-      - name: Download the Script to update tags
+      - name: AWS SSM Send-Command using AWS-CLI
         run: |
           aws ssm send-command \
-          --instance-ids "${{ env.INSTANCE_IDS }}" \
-          --document-name "AWS-RunShellScript" \
-          --targets "Key=instanceIds,Values=i-0123456789abcdef0" \
-          --parameters 'commands=["aws s3 sync s3://intern-ujwal-docker/script/runner.sh /root/runner.sh"]'
+            --instance-ids "${{ env.INSTANCE_IDS }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Running deploy script" \
+            --parameters commands=["aws s3 sync s3://intern-ujwal-docker/script/runner.sh /root/runner.sh"] \
+            --timeout-seconds 600 \
+            --output text
     
 
       - name: AWS SSM Send-Command using AWS-CLI
