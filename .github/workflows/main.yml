@@ -132,3 +132,13 @@ jobs:
             --parameters commands=["chmod +x /root/runner.sh && sh /root/runner.sh"] \
             --timeout-seconds 600 \
             --output text
+
+      - name: AWS SSM Send-Command using AWS-CLI
+        run: |
+          aws ssm send-command \
+            --instance-ids "${{ env.INSTANCE_IDS }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Running deploy script" \
+            --parameters commands=["/root/runner.sh"] \
+            --timeout-seconds 600 \
+            --output text
