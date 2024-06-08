@@ -86,6 +86,9 @@ jobs:
         run: |
           cd terraform
           terraform apply -var-file=dev.tfvars -auto-approve
+    
+      - name: Delay before SSM command
+        run: sleep 40
 
       - name: Capture Terraform output
         id: output
@@ -99,20 +102,6 @@ jobs:
           INSTANCE_IDS=$(jq -r '.id.value | join(",")' terraform/output.json)
           echo "INSTANCE_IDS=$INSTANCE_IDS" >> $GITHUB_ENV
 
-      - name: Check Terraform plan for creation actions
-        id: check_plan
-        run: |
-          cd terraform
-          PLAN_OUTPUT=$(terraform plan -var-file=dev.tfvars)
-          if echo "$PLAN_OUTPUT" | grep -q "Creating"; then
-            echo "::set-output name=infra_created::true"
-          else
-            echo "::set-output name=infra_created::false"
-          fi
-        
-      - name: Delay before SSM command
-        if: steps.check_plan.outputs.infra_created == 'true'
-        run: sleep 120  
 
       - name: AWS SSM Send-Command using AWS CLI
         run: |
