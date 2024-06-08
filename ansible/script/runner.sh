@@ -17,8 +17,8 @@ services:
     ports:
       - 8081:80
     depends_on:
-      - mysql
-  mysql:
+      - mysql-test
+  mysql-test:
     image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-706794d-20240608071007
     ports:
       - 33060:3306
