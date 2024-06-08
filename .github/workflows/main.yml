@@ -90,6 +90,7 @@ jobs:
 
       - name: Terraform apply
         run: |
+          cd terraform
           cat output-terraform.txt | grep "i-*"
 
       # - name: AWS SSM Send-Command using AWS-CLI
