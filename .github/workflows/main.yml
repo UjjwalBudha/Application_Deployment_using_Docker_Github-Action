@@ -102,7 +102,7 @@ jobs:
       - name: Delay before SSM command
         run: sleep 40
 
-      - name: AWS SSM Send-Command using AWS CLI
+      - name: AWS SSM Send-Command using AWS-CLI
         run: |
           aws ssm send-command \
             --instance-ids "${{ env.INSTANCE_IDS }}" \
