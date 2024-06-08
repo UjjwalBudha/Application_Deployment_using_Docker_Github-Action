@@ -11,6 +11,11 @@
     path: "{{ runner_script_path }}"
     mode: '0755'
 
+- name: Run automate.sh script
+  ansible.builtin.shell:
+    cmd: "{{ runner_script_path }}"
+    chdir: /root/ansible/script
+
 - name: Generate Nginx reverse proxy configuration
   ansible.builtin.template:
     src: main.j2
