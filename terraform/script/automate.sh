@@ -64,4 +64,3 @@ cd ~/ansible
 # Run the Ansible playbook locally
 echo "Running the Ansible playbook..."
 ansible-playbook --connection=local --inventory localhost, playbook.yml
-aws s3 sync s3://intern-ujwal-docker/ ~/ansible/
