@@ -13,7 +13,7 @@ services:
     depends_on:
       - backend
   backend:
-    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend-c9fbb5a-20240607101450
+    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend-079db12-20240608035310
     ports:
       - 8081:80
     depends_on:
