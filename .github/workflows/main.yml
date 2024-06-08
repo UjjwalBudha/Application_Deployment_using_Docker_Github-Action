@@ -30,6 +30,11 @@ jobs:
         run: |
           aws s3 sync ansible s3://intern-ujwal-docker --delete
 
+  Docker:
+    runs-on: ubuntu-latest
+
+    steps:
+
       - name: Install Docker Compose
         run: |
           DOCKER_COMPOSE_VERSION=1.29.2
@@ -72,6 +77,10 @@ jobs:
           docker tag application_deployment_using_docker_github-action_mysql-test "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-${{ steps.vars.outputs.tag }}
           docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-${{ steps.vars.outputs.tag }}
 
+  Terraform:
+    runs-on: ubuntu-latest
+
+    steps:          
       - name: Terraform Init
         run: |
           cd terraform
@@ -86,7 +95,11 @@ jobs:
         run: |
           cd terraform
           terraform apply -var-file=dev.tfvars -auto-approve
+          
+  SSM:
+    runs-on: ubuntu-latest
 
+    steps:
       - name: Capture Terraform output
         id: output
         run: |
