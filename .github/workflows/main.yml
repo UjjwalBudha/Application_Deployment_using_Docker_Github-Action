@@ -72,42 +72,42 @@ jobs:
           docker tag application_deployment_using_docker_github-action_mysql-test "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-${{ steps.vars.outputs.tag }}
           docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-${{ steps.vars.outputs.tag }}
 
-      # - name: Terraform Init
-      #   run: |
-      #     cd terraform
-      #     terraform init
+      - name: Terraform Init
+        run: |
+          cd terraform
+          terraform init
 
-      # - name: Terraform plan
-      #   run: |
-      #     cd terraform
-      #     terraform plan -var-file=dev.tfvars
+      - name: Terraform plan
+        run: |
+          cd terraform
+          terraform plan -var-file=dev.tfvars
 
-      # - name: Terraform apply
-      #   run: |
-      #     cd terraform
-      #     terraform apply -var-file=dev.tfvars -auto-approve
+      - name: Terraform apply
+        run: |
+          cd terraform
+          terraform apply -var-file=dev.tfvars -auto-approve
 
-      # - name: Capture Terraform output
-      #   id: output
-      #   run: |
-      #     cd terraform
-      #     terraform output -json > output.json
+      - name: Capture Terraform output
+        id: output
+        run: |
+          cd terraform
+          terraform output -json > output.json
   
-      # - name: Extract instance IDs
-      #   id: extract_instance_ids
-      #   run: |
-      #     INSTANCE_IDS=$(jq -r '.id.value | join(",")' terraform/output.json)
-      #     echo "INSTANCE_IDS=$INSTANCE_IDS" >> $GITHUB_ENV
+      - name: Extract instance IDs
+        id: extract_instance_ids
+        run: |
+          INSTANCE_IDS=$(jq -r '.id.value | join(",")' terraform/output.json)
+          echo "INSTANCE_IDS=$INSTANCE_IDS" >> $GITHUB_ENV
 
-      # - name: Delay before SSM command
-      #   run: sleep 20
+      - name: Delay before SSM command
+        run: sleep 20
 
-      # - name: AWS SSM Send-Command using AWS-CLI
-      #   run: |
-      #     aws ssm send-command \
-      #       --instance-ids "${{ env.INSTANCE_IDS }}" \
-      #       --document-name "AWS-RunShellScript" \
-      #       --comment "Running deploy script" \
-      #       --parameters commands=["/root/ansible/script/runner.sh"] \
-      #       --timeout-seconds 600 \
-      #       --output text
+      - name: AWS SSM Send-Command using AWS-CLI
+        run: |
+          aws ssm send-command \
+            --instance-ids "${{ env.INSTANCE_IDS }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Running deploy script" \
+            --parameters commands=["/root/ansible/script/runner.sh"] \
+            --timeout-seconds 600 \
+            --output text
