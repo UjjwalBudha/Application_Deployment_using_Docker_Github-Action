@@ -7,19 +7,19 @@ cd ~
 echo "version: '3'
 services:
   frontend:
-    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-aa2b47e-20240607054008
+    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-71ca347-20240608053529
     ports:
       - 8080:80
     depends_on:
       - backend
   backend:
-    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend-079db12-20240608035310
+    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend-71ca347-20240608053529
     ports:
       - 8081:80
     depends_on:
       - mysql
   mysql:
-    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-aa2b47e-20240607054008
+    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-71ca347-20240608053529
     ports:
       - 33060:3306
     environment:
