@@ -99,8 +99,8 @@ jobs:
           INSTANCE_IDS=$(jq -r '.id.value | join(",")' terraform/output.json)
           echo "INSTANCE_IDS=$INSTANCE_IDS" >> $GITHUB_ENV
 
-      - name: Delay before SSM command
-        run: sleep 40
+      # - name: Delay before SSM command
+      #   run: sleep 40
 
       - name: AWS SSM Send-Command using AWS-CLI
         run: |
