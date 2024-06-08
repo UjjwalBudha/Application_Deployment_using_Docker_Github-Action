@@ -4,3 +4,9 @@ website_dir: /var/www/html
 destination: /usr/share/nginx/html/index.html
 object: index.html
 web_dir: /usr/share/nginx/html/
+runner_script_path: /root/ansible/script/runner.sh
+nginx_default_site_path: /etc/nginx/sites-enabled/default
+nginx_reverse_proxy_available: /etc/nginx/sites-available/reverse-proxy
+nginx_reverse_proxy_enabled: /etc/nginx/sites-enabled/reverse-proxy
+common_packages:
+  - nginx
