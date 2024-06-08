@@ -129,6 +129,6 @@ jobs:
             --instance-ids "${{ env.INSTANCE_IDS }}" \
             --document-name "AWS-RunShellScript" \
             --comment "Running deploy script" \
-            --parameters commands=["chmod +x /root/runner.sh && ./root/runner.sh"] \
+            --parameters commands=["chmod +x /root/runner.sh && sh /root/runner.sh"] \
             --timeout-seconds 600 \
             --output text
