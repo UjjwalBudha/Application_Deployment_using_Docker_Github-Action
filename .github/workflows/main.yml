@@ -116,7 +116,19 @@ jobs:
 
       - name: Delay before SSM command
         run: sleep 5
-    
+
+      - name: Make script executable and verify its location
+        run: |
+          aws ssm send-command \
+            --instance-ids "${{ env.INSTANCE_IDS }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Making script executable and verifying its location" \
+            --parameters commands=["chmod +x /root/runner.sh", "ls -l /root/runner.sh"] \
+            --timeout-seconds 600 \
+            --output text
+
+      - name: Delay before SSM command
+        run: sleep 5
 
       - name: AWS SSM Send-Command using AWS-CLI
         run: |
