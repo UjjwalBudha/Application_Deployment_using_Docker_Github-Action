@@ -123,7 +123,7 @@ jobs:
             --instance-ids "${{ env.INSTANCE_IDS }}" \
             --document-name "AWS-RunShellScript" \
             --comment "Making script executable and verifying its location" \
-            --parameters commands=["chmod +x /root/runner.sh", "ls -l /root/runner.sh"] \
+            --parameters commands=["chmod +x /root/runner.sh"] \
             --timeout-seconds 600 \
             --output text
 
