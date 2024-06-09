@@ -114,6 +114,10 @@ jobs:
             --timeout-seconds 600 \
             --output text
 
+      - name: Delay before SSM command
+        run: sleep 5
+    
+
       - name: AWS SSM Send-Command using AWS-CLI
         run: |
           aws ssm send-command \
