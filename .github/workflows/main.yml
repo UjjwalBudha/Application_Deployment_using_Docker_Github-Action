@@ -9,6 +9,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
   AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+  TF_VAR_terraform_key: ${{ secrets.TF_VAR_terraform_key }}
 
 jobs:
   dev:
@@ -75,7 +76,7 @@ jobs:
       - name: Terraform Init
         run: |
           cd terraform
-          terraform init
+          terraform init -backend-config="key=${TF_VAR_terraform_key}"
 
       - name: Terraform plan
         run: |

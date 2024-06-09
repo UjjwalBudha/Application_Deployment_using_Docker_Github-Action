@@ -26,7 +26,7 @@ services:
       - MYSQL_USER=ujwal
       - MYSQL_PASSWORD=ujwal1234
     ports:
-      - "33060:3306"
+      - "33061:3306"
     volumes:
       - "./data/db/mysql:/var/lib/mysql"
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -35,3 +35,4 @@ services:
 
 networks:
   test-networks:
+  
