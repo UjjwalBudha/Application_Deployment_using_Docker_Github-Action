@@ -4,17 +4,18 @@ on:
   workflow_dispatch:
   push:
     branches: ["dev", "main"]
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
-  AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-  TF_VAR_terraform_key: ${{ secrets.TF_VAR_terraform_key }}
+  pull_request:
+      branches: ["main"]
 
 jobs:
   dev:
     runs-on: ubuntu-latest
-
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+      TF_VAR_terraform_key: ${{ secrets.TF_VAR_terraform_key }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
