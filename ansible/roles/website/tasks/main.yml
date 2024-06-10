@@ -1,0 +1,37 @@
+---
+- name: Install common packages using apt
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  loop: "{{ common_packages }}"
+
+- name: Ensure automate.sh has executable permissions
+  ansible.builtin.file:
+    path: "{{ runner_script_path }}"
+    mode: '0755'
+
+- name: Run automate.sh script
+  ansible.builtin.shell:
+    cmd: "{{ runner_script_path }}"
+    chdir: /root/ansible/script
+
+- name: Generate Nginx reverse proxy configuration
+  ansible.builtin.template:
+    src: main.j2
+    dest: "{{ nginx_reverse_proxy_available }}"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Enable the reverse proxy configuration
+  file:
+    src: "{{ nginx_reverse_proxy_available }}"
+    dest: "{{ nginx_reverse_proxy_enabled }}"
+    state: link
+
+- name: Remove default Nginx site if it exists
+  file:
+    path: "{{ nginx_default_site_path }}"
+    state: absent
+  notify: Restart nginx

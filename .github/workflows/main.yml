@@ -1,0 +1,132 @@
+name: Deploying an app
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["dev", "main"]
+  pull_request:
+      branches: ["main"]
+
+jobs:
+  dev:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+      TF_VAR_terraform_key: ${{ secrets.TF_VAR_terraform_key }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Upload to S3
+        run: |
+          aws s3 sync ansible s3://intern-ujwal-docker --delete
+
+      - name: Install Docker Compose
+        run: |
+          DOCKER_COMPOSE_VERSION=1.29.2
+          sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+
+      - name: Login Docker
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ujwalbudha --password-stdin
+
+      - name: Login to ECR
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Build Docker Image
+        run: |
+          docker-compose build
+
+      - name: Check Docker image name
+        run: |
+          docker images
+
+      - name: Set Dynamic Tag
+        id: vars
+        run: |
+          TAG="${GITHUB_SHA::7}-$(date +'%Y%m%d%H%M%S')"
+          echo "::set-output name=tag::$TAG"
+
+      - name: Upload the docker_frontend_container image to ECR
+        run: |
+          docker tag application_deployment_using_docker_github-action_frontend "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-${{ steps.vars.outputs.tag }}
+          docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:frontend-${{ steps.vars.outputs.tag }}
+
+      - name: Upload the docker_backend_container image to ECR
+        run: |
+          docker tag application_deployment_using_docker_github-action_backend "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend-${{ steps.vars.outputs.tag }}
+          docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:backend-${{ steps.vars.outputs.tag }}
+
+      - name: Upload the docker_database_container image to ECR
+        run: |
+          docker tag application_deployment_using_docker_github-action_mysql-test "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-${{ steps.vars.outputs.tag }}
+          docker push "${{ secrets.AWS_USER_ID }}".dkr.ecr.us-east-1.amazonaws.com/testujwal001:database-${{ steps.vars.outputs.tag }}
+
+      - name: Terraform Init
+        run: |
+          cd terraform
+          terraform init -backend-config="key=${TF_VAR_terraform_key}"
+
+      - name: Terraform plan
+        run: |
+          cd terraform
+          terraform plan -var-file=dev.tfvars
+
+      - name: Terraform apply
+        run: |
+          cd terraform
+          terraform apply -var-file=dev.tfvars -auto-approve
+
+      - name: Capture Terraform output
+        id: output
+        run: |
+          cd terraform
+          terraform output -json > output.json
+  
+      - name: Extract instance IDs
+        id: extract_instance_ids
+        run: |
+          INSTANCE_IDS=$(jq -r '.id.value | join(",")' terraform/output.json)
+          echo "INSTANCE_IDS=$INSTANCE_IDS" >> $GITHUB_ENV
+
+      - name: Delay before SSM command
+        run: sleep 20
+
+      - name: AWS SSM Send-Command using AWS-CLI
+        run: |
+          aws ssm send-command \
+            --instance-ids "${{ env.INSTANCE_IDS }}" \
+            --document-name "AWS-RunShellScript" \
+            --parameters commands=["aws s3 cp s3://intern-ujwal-docker/script/runner.sh /root"] 
+
+      - name: Delay before SSM command
+        run: sleep 2
+
+      - name: Make script executable and verify its location
+        run: |
+          aws ssm send-command \
+            --instance-ids "${{ env.INSTANCE_IDS }}" \
+            --document-name "AWS-RunShellScript" \
+            --parameters commands=["chmod +x /root/runner.sh"] 
+
+      - name: Delay before SSM command
+        run: sleep 2
+
+      - name: AWS SSM Send-Command using AWS-CLI
+        run: |
+          aws ssm send-command \
+            --instance-ids "${{ env.INSTANCE_IDS }}" \
+            --document-name "AWS-RunShellScript" \
+            --parameters commands=["/root/runner.sh"] 
