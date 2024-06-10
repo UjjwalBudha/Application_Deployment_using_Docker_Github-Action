@@ -1,7 +1,6 @@
 #!/bin/bash
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 426857564226.dkr.ecr.us-east-1.amazonaws.com
 mkdir -p ~/data/db/mysql
-cp ~/ansible/init.sql ~/data/db/mysql
 
 cd ~
 echo "version: '3'
